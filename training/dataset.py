@@ -14,4 +14,4 @@ class MyDataSet(Dataset):
         return len(self.df_x)
     
     def __getitem__(self, index):
-        return torch.LongTensor(self.df_x.iloc[index].values), torch.FloatTensor(self.df_y.iloc[index].values)        
+        return torch.LongTensor(self.df_x.iloc[index]), torch.FloatTensor(self.df_y.iloc[index])        

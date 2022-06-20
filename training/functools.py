@@ -1,7 +1,10 @@
 from typing import List, Sequence
 
 import matplotlib.pyplot as plt
+import pandas as pd
 from torch.utils.data import Dataset, DataLoader, random_split
+
+from training.dataset import MyDataSet
 
 
 def get_dataloader(
@@ -9,7 +12,7 @@ def get_dataloader(
     batch_size: int,
     n_workers: int,
     valid_ratio: float,
-    test_ratio: float
+    test_ratio: float,
 ) -> Sequence[DataLoader]:
     """Generate dataloader"""
     # Split dataset into training dataset and validation dataset
@@ -17,8 +20,9 @@ def get_dataloader(
     valid_len = int(valid_ratio * len(dataset))
     test_len = len(dataset) - train_len - valid_len
     lengths = [train_len, valid_len, test_len]
+    
     train_set, valid_set, test_set = random_split(dataset, lengths)
-
+   
     train_loader = DataLoader(
     train_set,
     batch_size=batch_size,
@@ -44,6 +48,60 @@ def get_dataloader(
     num_workers=n_workers,
     drop_last=True,
     pin_memory=True
+    )
+
+    return train_loader, valid_loader, test_loader
+
+
+def get_dataloader_df(
+    df_x: pd.DataFrame,
+    df_y: pd.DataFrame,
+    batch_size: int,
+    n_workers: int,
+    valid_ratio: float,
+    test_ratio: float,
+) -> Sequence[DataLoader]:
+    """Generate dataloader"""
+    # Split dataset into training dataset and validation dataset
+    data_len = len(df_x)
+    train_len = int((1 - valid_ratio - test_ratio) * data_len)
+    valid_len = int(valid_ratio * data_len)
+    
+    train_set = MyDataSet(df_x=df_x[:train_len], df_y=df_y[:train_len])
+    valid_set = MyDataSet(
+        df_x=df_x[train_len:train_len+valid_len],
+        df_y=df_y[train_len:train_len+valid_len]
+    )
+    test_set = MyDataSet(
+        df_x=df_x[train_len+valid_len:],
+        df_y=df_y[train_len+valid_len:]
+    )
+
+    train_loader = DataLoader(
+        train_set,
+        batch_size=batch_size,
+        shuffle=True,
+        drop_last=True,
+        num_workers=n_workers,
+        pin_memory=True
+    )
+    
+    valid_loader = DataLoader(
+        valid_set,
+        batch_size=batch_size,
+        shuffle=True,
+        num_workers=n_workers,
+        drop_last=True,
+        pin_memory=True
+    )
+
+    test_loader = DataLoader(
+        test_set,
+        batch_size=batch_size,
+        shuffle=True,
+        num_workers=n_workers,
+        drop_last=True,
+        pin_memory=True
     )
 
     return train_loader, valid_loader, test_loader
