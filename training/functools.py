@@ -24,30 +24,30 @@ def get_dataloader(
     train_set, valid_set, test_set = random_split(dataset, lengths)
    
     train_loader = DataLoader(
-    train_set,
-    batch_size=batch_size,
-    shuffle=True,
-    drop_last=True,
-    num_workers=n_workers,
-    pin_memory=True
+        train_set,
+        batch_size=batch_size,
+        shuffle=True,
+        drop_last=True,
+        num_workers=n_workers,
+        pin_memory=True
     )
     
     valid_loader = DataLoader(
-    valid_set,
-    batch_size=batch_size,
-    shuffle=True,
-    num_workers=n_workers,
-    drop_last=True,
-    pin_memory=True
+        valid_set,
+        batch_size=batch_size,
+        shuffle=True,
+        num_workers=n_workers,
+        drop_last=True,
+        pin_memory=True
     )
 
     test_loader = DataLoader(
-    test_set,
-    batch_size=batch_size,
-    shuffle=True,
-    num_workers=n_workers,
-    drop_last=True,
-    pin_memory=True
+        test_set,
+        batch_size=batch_size,
+        shuffle=True,
+        num_workers=n_workers,
+        drop_last=True,
+        pin_memory=True
     )
 
     return train_loader, valid_loader, test_loader
