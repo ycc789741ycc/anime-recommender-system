@@ -114,7 +114,7 @@ class ModelTrainer():
             # logging
             loss_print = accum_loss
             loss_step.append(loss_print)
-            progress.set_postfix({'loss': loss_print, 'step': self.optimizer._step})
+            progress.set_postfix({'loss': loss_print, 'step': self.step})
             
         loss_epoch_mean = np.mean(loss_step)
         self.training_status.train_loss_epoch_mean[self.epoch] = loss_epoch_mean
