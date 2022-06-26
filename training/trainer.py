@@ -67,7 +67,7 @@ class ModelTrainer():
         valid_loader: DataLoader,
         model: nn.Module,
         loss_criterion: nn.Module,
-        optimizer: NoamOpt,
+        optimizer: torch.optim.Optimizer,
         device: Text,
         training_status: TrainingStatus = TrainingStatus(),
         model_save_path: Text = "./model/model.pt"
@@ -111,10 +111,21 @@ class ModelTrainer():
             scaler.step(self.optimizer)
             scaler.update()
             
+            # self.step += 1
+            # data = [i.to(self.device) for i in data]
+            # src = data[0]
+            # tgt = data[1]
+            # out = self.model(src)
+            # loss = self.loss_criterion(out, tgt)
+            # self.model.zero_grad()
+            # loss.backward()
+            # self.optimizer.step()
+            # accum_loss = loss.item()
+            
             # logging
             loss_print = accum_loss
             loss_step.append(loss_print)
-            progress.set_postfix({'loss': loss_print, 'step': self.optimizer._step})
+            progress.set_postfix({'loss': loss_print, 'step': self.step})
             
         loss_epoch_mean = np.mean(loss_step)
         self.training_status.train_loss_epoch_mean[self.epoch] = loss_epoch_mean
