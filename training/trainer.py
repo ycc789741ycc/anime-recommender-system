@@ -67,7 +67,7 @@ class ModelTrainer():
         valid_loader: DataLoader,
         model: nn.Module,
         loss_criterion: nn.Module,
-        optimizer: NoamOpt,
+        optimizer: torch.optim.Optimizer,
         device: Text,
         training_status: TrainingStatus = TrainingStatus(),
         model_save_path: Text = "./model/model.pt"
