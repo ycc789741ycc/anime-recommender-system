@@ -111,6 +111,17 @@ class ModelTrainer():
             scaler.step(self.optimizer)
             scaler.update()
             
+            # self.step += 1
+            # data = [i.to(self.device) for i in data]
+            # src = data[0]
+            # tgt = data[1]
+            # out = self.model(src)
+            # loss = self.loss_criterion(out, tgt)
+            # self.model.zero_grad()
+            # loss.backward()
+            # self.optimizer.step()
+            # accum_loss = loss.item()
+            
             # logging
             loss_print = accum_loss
             loss_step.append(loss_print)
