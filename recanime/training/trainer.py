@@ -9,7 +9,7 @@ from torch.cuda.amp import GradScaler, autocast
 import numpy as np
 import torch.nn as nn
 
-from schema.training import TrainingStatus
+from recanime.schema.training import TrainingStatus
 
 
 logger = logging.getLogger(__name__)
@@ -161,7 +161,7 @@ class ModelTrainer():
     def _training_checkpoint(self, loss: float) -> None:
         if loss < self.min_loss:
             self.min_loss = loss
-            torch.save(self.model, self.model_save_path)
+            torch.save(self.model.state_dict(), self.model_save_path)
             logger.info(f"Save the model.")
     
     def test(self, test_loader: DataLoader) -> float:

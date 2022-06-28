@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 import pandas as pd
 from torch.utils.data import Dataset, DataLoader, random_split
 
-from training.dataset import MyDataSet
+from recanime.training.dataset import MyDataSet
 
 
 def get_dataloader(
