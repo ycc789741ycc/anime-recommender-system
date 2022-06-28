@@ -1,13 +1,15 @@
+import logging
 from typing import Text
 from tqdm import tqdm
-import logging
 
 import torch
+import numpy as np
+import torch.nn as nn
+from sklearn.metrics import roc_auc_score
 from torch.optim import optimizer
 from torch.utils.data import DataLoader
 from torch.cuda.amp import GradScaler, autocast
-import numpy as np
-import torch.nn as nn
+
 
 from recanime.schema.training import TrainingStatus
 
@@ -167,6 +169,7 @@ class ModelTrainer():
     def test(self, test_loader: DataLoader) -> float:
         loss_step = []
         self.model.eval()
+        roc_targets, roc_predicts = [], []
 
         with torch.no_grad():
             for data in tqdm(test_loader, desc=f"test epoch {self.epoch}", leave=True):
@@ -183,10 +186,15 @@ class ModelTrainer():
                 loss_print = accum_loss
                 loss_step.append(loss_print)
             
+                roc_predicts.extend(out.tolist())
+                roc_targets.extend(tgt.tolist())
+            
         loss_epoch_mean = np.mean(loss_step)
-        logger.info(f"validation loss: {loss_epoch_mean:.4f}")
+        model_score = roc_auc_score(roc_targets, roc_predicts)
+        logger.info(f"Testing loss: {loss_epoch_mean:.4f}")
+        logger.info(f"ROC AUC score: {model_score:.4f}")
 
-        return loss_epoch_mean
+        return loss_epoch_mean, model_score
     
     def export_training_status(self) -> TrainingStatus:
         self.training_status.epoch_record = self.epoch
