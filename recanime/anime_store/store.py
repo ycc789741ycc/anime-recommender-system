@@ -1,24 +1,16 @@
 from typing import List, Text
-from pathlib import Path
 
 import numpy as np
 import pandas as pd
 
-from recanime.document_store.base import AnimeStoreBase
+from recanime.anime_store.base import AnimeStoreBase
 from recanime.schema.predict import AnimeAttributes, AnimeInfo
 
 
-class ExcelAnimeStore(AnimeStoreBase):
-    def __init__(self, excel_path: Path) -> None:
-        self.anime_df = pd.read_csv(
-            excel_path,
-            low_memory=False,
-            usecols=["MAL_ID", "Name", "Genres", "sypnopsis"]
-        )
-        self.anime_df.rename({"MAL_ID": "anime_id"}, inplace=True, axis=1)
-        self.anime_df['Genres'] = self.anime_df['Genres'].str.split(pat=",", expand=False)
-        self.anime_df['Genres'] = self.anime_df['Genres'].apply(
-            lambda genres: [genre.strip() for genre in genres]
+class AnimeStore(AnimeStoreBase):
+    def __init__(self, anime_infos: List[AnimeInfo]) -> None:
+        self.anime_df = pd.DataFrame(
+            [anime_info.dict() for anime_info in anime_infos]
         )
 
     async def filter_anime_ids_by_attributes(
@@ -28,13 +20,16 @@ class ExcelAnimeStore(AnimeStoreBase):
         """Implement the base class method."""
 
         attributes_dict = attributes.dict()
+        key_to_pop = []
         for key, value in attributes_dict.items():
             if value <= 0:
-                attributes_dict.pop(key)
+                key_to_pop.append(key)
+        for key in key_to_pop:
+            attributes_dict.pop(key)
 
         selected_attributes = set(attributes_dict.keys())
-        selected_animes_df = self.anime_df[['anime_id', 'Genres']].copy(deep=True)
-        selected_animes_df['Genres'] = selected_animes_df['Genres'].apply(
+        selected_animes_df = self.anime_df[['anime_id', 'genres']].copy(deep=True)
+        selected_animes_df['genres'] = selected_animes_df['genres'].apply(
             lambda x: np.nan if len(selected_attributes & set(x)) == 0 else x
         )
         selected_animes_df.dropna(inplace=True)
@@ -51,8 +46,6 @@ class ExcelAnimeStore(AnimeStoreBase):
         selected_animes_df = self.anime_df[
             self.anime_df["anime_id"].isin(anime_ids)
         ].copy(deep=True)
-        selected_animes_df.rename({"Name": "anime_name"}, inplace=True, axis=1)
-        selected_animes_df.rename({"Genres": "genres"}, inplace=True, axis=1)
         selected_animes = selected_animes_df.to_dict(orient='records')
 
         return [AnimeInfo(**selected_anime) for selected_anime in selected_animes]

@@ -5,7 +5,7 @@ import numpy as np
 import torch
 import pandas as pd
 
-from recanime.document_store.base import AnimeStoreBase
+from recanime.anime_store.store import AnimeStore
 from recanime.recommender.ranking_base_filter.model import FactorizationMachineModel
 from recanime.recommender.base import AnimeRecBase
 from recanime.schema.predict import AnimeAttributes, AnimeInfo, PredictResults
@@ -32,7 +32,7 @@ class RankingBaseAnimeRec(AnimeRecBase):
 
     async def predict(
         self,
-        anime_store: AnimeStoreBase,
+        anime_store: AnimeStore,
         attributes: AnimeAttributes,
         top_k: int
     ) -> List[PredictResults]:

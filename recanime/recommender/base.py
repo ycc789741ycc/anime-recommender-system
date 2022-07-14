@@ -4,7 +4,7 @@ from typing import Dict, List, Text
 
 import numpy as np
 
-from recanime.document_store.base import AnimeStoreBase
+from recanime.anime_store.base import AnimeStoreBase
 from recanime.schema.predict import AnimeAttributes, PredictResults
 
 
