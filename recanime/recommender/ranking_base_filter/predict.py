@@ -1,14 +1,14 @@
 import logging
-from typing import Dict, List, Text, Union
+from typing import Dict, List
 
-import numpy as np
 import torch
 import pandas as pd
 
-from recanime.document_store.base import AnimeStoreBase
+from recanime.anime_store.store import AnimeStore
 from recanime.recommender.ranking_base_filter.model import FactorizationMachineModel
 from recanime.recommender.base import AnimeRecBase
 from recanime.schema.predict import AnimeAttributes, AnimeInfo, PredictResults
+from recanime.schema.user import ExistedUserAttributesVector
 
 
 logger = logging.getLogger(__name__)
@@ -17,13 +17,11 @@ logger = logging.getLogger(__name__)
 class RankingBaseAnimeRec(AnimeRecBase):
     def __init__(
         self,
+        existed_user_attributes_vector: ExistedUserAttributesVector,
         model: FactorizationMachineModel,
         model_encode_config: Dict,
-        genre2genre_idx: Dict[Text, int],
-        genre_idx2genre: Dict[int, Text],
-        user_with_vector_dict: Dict[Text, Union[int, np.ndarray]]
     ) -> None:
-        super().__init__(genre2genre_idx, genre_idx2genre, user_with_vector_dict)
+        super().__init__(existed_user_attributes_vector)
         self.model = model
         self.model_user2user_encoded = model_encode_config['user2user_encoded']
         self.model_user_encoded2user = model_encode_config['user_encoded2user']
@@ -32,7 +30,7 @@ class RankingBaseAnimeRec(AnimeRecBase):
 
     async def predict(
         self,
-        anime_store: AnimeStoreBase,
+        anime_store: AnimeStore,
         attributes: AnimeAttributes,
         top_k: int
     ) -> List[PredictResults]:
@@ -88,7 +86,9 @@ class RankingBaseAnimeRec(AnimeRecBase):
         k_anime_infos = await anime_store.get_anime_informations_by_anime_id(
             k_anime_ids
         )
-        k_anime_infos_df = pd.DataFrame(k_anime_infos)
+        k_anime_infos_df = pd.DataFrame(
+            [k_anime_info.dict() for k_anime_info in k_anime_infos]
+        )
         k_anime_info_with_scores_df = pd.merge(
             k_anime_scores_df,
             k_anime_infos_df,
