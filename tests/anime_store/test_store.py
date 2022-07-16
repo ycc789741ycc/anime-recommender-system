@@ -2,7 +2,7 @@ import logging
 
 from recanime.anime_store.store import AnimeStore
 from recanime.schema.predict import AnimeInfo, AnimeAttributes
-from test.conftest import ANIME_INFOS
+from tests.conftest import ANIME_INFOS
 
 
 logger = logging.getLogger("pytest")

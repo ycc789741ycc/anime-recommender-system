@@ -16,9 +16,9 @@ def factorization_machine_encode_config():
     INPUT_DIR = './model/ranking_base'
 
     with open(INPUT_DIR + "/encode_config.json") as f:
-        encoder_conig = json.load(f)
+        encoder_config = json.load(f)
 
-    return encoder_conig
+    return encoder_config
 
 
 @pytest.fixture(scope="session")
