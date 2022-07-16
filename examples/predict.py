@@ -11,7 +11,6 @@ from recanime.utils.model_utils import get_fm_model, get_fm_encoder_config
 from recanime.utils.rec_utils import get_existed_user_attributes_vector
 
 
-MODEL_INPUT_DIR = './model/ranking_base'
 DATA_INPUT_DIR = './data'
 
 
