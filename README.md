@@ -11,13 +11,15 @@ This github repo has contains the pretrained model and animes until 2020, is abo
 Download `model` and `data` or just clone down this whole github repo, and put `model` and `data` 
 in the first level of your work directory.  
 ## Quick Start  
-Prepare: The input format is define in `class AnimeAttributes`, which is inherit from [pydantic](https://pydantic-docs.helpmanual.io/) BaseModel.  
+Prepare: The input format is define in `class AnimeAttributes`, which inherit from [pydantic](https://pydantic-docs.helpmanual.io/) BaseModel.  
 ```python
+from typing import List
+
 from recanime.anime_store.excel_store import ExcelAnimeStore
 from recanime.recommender.ranking_base_filter.model import FactorizationMachineModel
 from recanime.recommender.ranking_base_filter.predict import RankingBaseAnimeRec
 from recanime.schema.user import ExistedUserAttributesVector
-from recanime.schema.predict import AnimeAttributes
+from recanime.schema.predict import AnimeAttributes, AnimeInfo
 from recanime.utils.model_utils import get_fm_model, get_fm_encoder_config
 from recanime.utils.rec_utils import get_existed_user_attributes_vector
 
@@ -40,10 +42,10 @@ ranking_base_anime_rec = RankingBaseAnimeRec(
 Predict  
 ```python
 input_feature = {"Romance": 4, "School": 4, "Super Power": 2}
-results = await ranking_base_anime_rec.predict(
+results: List[AnimeInfo] = await ranking_base_anime_rec.predict(
     anime_store=excel_anime_store,
     attributes=AnimeAttributes(**input_feature),
-    top_k=5
+    top_k=3
 )
 ```
 Result
@@ -76,22 +78,6 @@ pprint.pprint([result.dict() for result in results])
                  'anime_name': 'Karadasagashi',
                  'genres': ['Horror', 'School', 'Shounen'],
                  'synopsis': '"Hey, Asuka... search for my body." At school in...'
-                },
-  'predict_score': 1.0},
- {'anime_info': {'anime_id': '10080',
-                 'anime_name': 'Kami nomi zo Shiru Sekai II',
-                 'genres': ['Comedy',
-                            'Harem',
-                            'Romance',
-                            'Shounen',
-                            'Supernatural'],
-                 'synopsis': 'Keima Katsuragi, the "God of Conquest," returns...'
-                },
-  'predict_score': 1.0},
- {'anime_info': {'anime_id': '10045',
-                 'anime_name': 'Seishun Fuufu Monogatari: Koiko no Mainichi',
-                 'genres': ['Comedy', 'Drama', 'Ecchi', 'Romance', 'Seinen'],
-                 'synopsis': 'Based on the romance manga "Koiko no Mainichi ...'
                 },
   'predict_score': 1.0}]
 ```
