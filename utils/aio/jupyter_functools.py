@@ -17,15 +17,16 @@ def execute_in_running_event_loop_until_task_done(coroutine: Coroutine):
     still running.
     """
     result_stack = [None]
+
     async def coro_wrapper(coroutine: Coroutine):
         result_stack.append(await coroutine)
-    
+
     event_loop = asyncio.get_event_loop()
     if event_loop.is_running():
         with ThreadPoolExecutor(max_workers=1) as executor:
             exec_func = functools.partial(asyncio.run, coro_wrapper(coroutine))
             event_loop.run_in_executor(executor=executor, func=exec_func)
-            
+
         return result_stack.pop()
     else:
         logger.info("There's no running event loop.")
@@ -33,4 +34,3 @@ def execute_in_running_event_loop_until_task_done(coroutine: Coroutine):
             asyncio.wait(coroutine)
         )
         return done
-        
