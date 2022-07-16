@@ -7,10 +7,13 @@ from recanime.anime_store.store import AnimeStore
 
 class ExcelAnimeStore(AnimeStore):
     def __init__(self, excel_path: Path) -> None:
+        """Overwrite the init method"""
+
         self.anime_df = pd.read_csv(
             excel_path,
             low_memory=False,
-            usecols=["MAL_ID", "Name", "Genres", "sypnopsis"]
+            usecols=["MAL_ID", "Name", "Genres", "synopsis"],
+            dtype={"MAL_ID": "string"}
         )
         self.anime_df.rename({"MAL_ID": "anime_id"}, inplace=True, axis=1)
         self.anime_df.rename({"Name": "anime_name"}, inplace=True, axis=1)
