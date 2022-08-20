@@ -1,14 +1,14 @@
+import os
 import pickle
 
 
 from recanime.schema.user import ExistedUserAttributesVector
 
 
-DATA_INPUT_DIR = './data'
+DATA_INPUT_DIR = os.getenv("DATA_INPUT_DIR", default='./data')
 
 
 def get_existed_user_attributes_vector() -> ExistedUserAttributesVector:
-    DATA_INPUT_DIR = './data'
     with open(DATA_INPUT_DIR + "/user_with_vector_dict.pickle", 'rb') as f:
         user_with_vector_dict = pickle.load(f)
 

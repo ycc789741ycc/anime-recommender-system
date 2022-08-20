@@ -10,6 +10,11 @@ pip install recanime
 This github repo has contains the pretrained model and animes until 2020, is about to total 10MB.  
 Download `model` and `data` or just clone down this whole github repo, and put `model` and `data` 
 in the first level of your work directory.  
+  
+You can also set the model and data directory by setting the environment variable.  
+model: FM_MODEL_INPUT_DIR=...  
+data: DATA_INPUT_DIR=...  
+  
 ## Quick Start  
 Prepare: The input format is define in `class AnimeAttributes`, which inherit from [pydantic](https://pydantic-docs.helpmanual.io/) BaseModel.  
 ```python
