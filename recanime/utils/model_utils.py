@@ -1,4 +1,5 @@
 import json
+import os
 from typing import Dict
 
 import torch
@@ -6,7 +7,7 @@ import torch
 from recanime.recommender.ranking_base_filter.model import FactorizationMachineModel
 
 
-FM_MODEL_INPUT_DIR = './model/ranking_base'
+FM_MODEL_INPUT_DIR = os.getenv("FM_MODEL_INPUT_DIR", default='./model/ranking_base')
 
 
 def get_fm_encoder_config() -> Dict:
