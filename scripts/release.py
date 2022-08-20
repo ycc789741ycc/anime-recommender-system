@@ -30,12 +30,6 @@ PRERELEASE_FLAVORS = ("alpha", "rc")
 
 RELEASE_BRANCH_PATTERN = re.compile(r"^\d+\.\d+\.x$")
 
-
-pyproject_filepath = Path('pyproject.toml').absolute()
-requirements_filepath = Path('requirements.txt').absolute()
-setup_py_filepath = Path('setup.py').absolute()
-version_filepath = Path('aiello_sdk/version.py').absolute()
-
 GIT_ADD_FILES = [
     str(Path(PYPROJECT_FILE_PATH).absolute()),
     str(Path('requirements.txt').absolute()),
@@ -179,18 +173,6 @@ def ask_version() -> Text:
     else:
         print("Aborting.")
         sys.exit(1)
-
-
-def get_package_version() -> Text:
-    """Find out what the referenced version of the Rasa SDK is."""
-
-    dependencies_filename = "pyproject.toml"
-    toml_data = toml.load(project_root() / dependencies_filename)
-    try:
-        sdk_version = toml_data["tool"]["poetry"]["dependencies"]["rasa-sdk"]
-        return sdk_version[1:].strip()
-    except AttributeError:
-        raise Exception(f"Failed to find Rasa SDK version in {dependencies_filename}")
 
 
 def git_existing_tags() -> Set[Text]:
