@@ -159,8 +159,17 @@ cython_debug/
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 #.idea/
 
+<<<<<<< HEAD
 #Self define
 data/**
 model/**
 tmp/**
 **/model/**
+=======
+# Self define
+.vscode/**
+# data/**
+# **/model/**
+tmp/**
+preprocessed_animelist.csv
+>>>>>>> 19ff7af90836d3e860850ac3ca736c637c091c70

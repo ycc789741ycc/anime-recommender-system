@@ -1,6 +1,6 @@
 import torch
 
-from recommender.layer import FactorizationMachine, FeaturesEmbedding, FeaturesLinear
+from recanime.recommender.layer import FactorizationMachine, FeaturesEmbedding, FeaturesLinear
 
 
 class FactorizationMachineModel(torch.nn.Module):
