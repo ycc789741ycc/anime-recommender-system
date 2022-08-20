@@ -17,18 +17,31 @@ import toml
 from pep440_version_utils import Version, is_valid_version
 
 
-VERSION_FILE_PATH = "recanime/version.py"
+# Modify according to package name
+PACKAGE_NAME = "recanime"
+
+VERSION_FILE_PATH = f"{PACKAGE_NAME}/version.py"
 
 PYPROJECT_FILE_PATH = "pyproject.toml"
 
 REPO_BASE_URL = "https://github.com/ycc789741ycc/anime-recommender-system"
 
-RELEASE_BRANCH_PREFIX = "prepare-release-"
-
 PRERELEASE_FLAVORS = ("alpha", "rc")
 
 RELEASE_BRANCH_PATTERN = re.compile(r"^\d+\.\d+\.x$")
 
+
+pyproject_filepath = Path('pyproject.toml').absolute()
+requirements_filepath = Path('requirements.txt').absolute()
+setup_py_filepath = Path('setup.py').absolute()
+version_filepath = Path('aiello_sdk/version.py').absolute()
+
+GIT_ADD_FILES = [
+    str(Path(PYPROJECT_FILE_PATH).absolute()),
+    str(Path('requirements.txt').absolute()),
+    str(Path('setup.py').absolute()),
+    str(Path(f'{PACKAGE_NAME}/version.py').absolute())
+]
 
 def create_argument_parser() -> argparse.ArgumentParser:
     """Parse all the command line arguments for the release script."""
@@ -67,7 +80,6 @@ def write_version_file(version: Version) -> None:
             f"# do not add anything but the version number here!\n"
             f'__version__ = "{version}"\n'
         )
-    check_call(["git", "add", str(version_file_path().absolute())])
 
 
 def write_version_to_pyproject(version: Version) -> None:
@@ -196,7 +208,7 @@ def git_current_branch() -> Text:
         return output.decode().strip()
     except CalledProcessError:
         # e.g. we are in detached head state
-        return "main"
+        return "master"
 
 
 def git_current_branch_is_master_or_release() -> bool:
@@ -293,6 +305,26 @@ def poetry_upgrade_version(version: Version) -> None:
     check_call(["make", "build"], env=exec_env)
 
 
+def git_add_files() -> None:
+    """Git add files."""
+
+    for filepath in GIT_ADD_FILES:
+        check_call(["git", "add", filepath])
+        print(f"Git add file: {filepath}.")
+
+
+def git_tag_and_push_tag(version: Version) -> None:
+    """Git tag the version of the commit and push the tag to remote."""
+
+    cmd_tag = ["git", "tag", str(version)]
+    print(f"Executing '{' '.join(cmd_tag)}'.")
+    check_call(cmd_tag)
+
+    cmd_tag_push = ["git", "push", "origin", str(version)]
+    print(f"Executing '{' '.join(cmd_tag_push)}'.")
+    check_call(cmd_tag_push)
+
+
 def main(args: argparse.Namespace) -> None:
     """Start a release preparation."""
 
@@ -306,15 +338,14 @@ def main(args: argparse.Namespace) -> None:
     confirm_version(version)
 
     write_version_file(version)
-    write_version_to_pyproject(version)
     poetry_upgrade_version(version)
+    git_add_files()
 
-    # alpha workflow on feature branch when a version bump is required
-    if version.is_alpha and not git_current_branch_is_master_or_release():
+    if git_current_branch_is_master_or_release():
         create_commit(version)
         push_changes()
-
         print_done_message_same_branch(version)
+        git_tag_and_push_tag(version)
     else:
         raise Exception("Wrong Branch!!")
 
