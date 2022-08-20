@@ -21,7 +21,7 @@ install_requires = \
 
 setup_kwargs = {
     'name': 'recanime',
-    'version': '0.1.0',
+    'version': '0.1.1',
     'description': 'Anime recommender system builded by Pytorch',
     'long_description': None,
     'author': 'yoshi',

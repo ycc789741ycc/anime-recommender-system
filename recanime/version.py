@@ -1,1 +1,3 @@
-__version__ = "0.1.0"
+# this file will automatically be changed,
+# do not add anything but the version number here!
+__version__ = "0.1.1"

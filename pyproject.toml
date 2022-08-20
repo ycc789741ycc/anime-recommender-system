@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "recanime"
-version = "0.1.0"
+version = "0.1.1"
 description = "Anime recommender system builded by Pytorch"
 authors = ["yoshi <yoshi4868686@gmail.com>"]
 
