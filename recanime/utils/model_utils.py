@@ -11,8 +11,6 @@ FM_MODEL_INPUT_DIR = os.getenv("FM_MODEL_INPUT_DIR", default='./model/ranking_ba
 
 
 def get_fm_encoder_config() -> Dict:
-    FM_MODEL_INPUT_DIR = './model/ranking_base'
-
     with open(FM_MODEL_INPUT_DIR + "/encode_config.json") as f:
         encoder_conig = json.load(f)
 
