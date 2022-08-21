@@ -1,6 +1,6 @@
 from typing import List, Text
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, validator
 
 
 class AnimeAttributes(BaseModel):
@@ -28,6 +28,12 @@ class AnimeAttributes(BaseModel):
     Shoujo: float = 0.0
     Psychological: float = 0.0
     Sports: float = 0.0
+
+    @validator('*', pre=True)
+    def in_score_range(cls, v):
+        if v < 0 or v > 10:
+            raise ValueError("The score must in range 0 to 10.")
+        return v
 
 
 class AnimeInfo(BaseModel):
