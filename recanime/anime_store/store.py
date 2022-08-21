@@ -19,7 +19,7 @@ class AnimeStore(AnimeStoreBase):
     ) -> List[Text]:
         """Implement the base class method."""
 
-        attributes_dict = attributes.dict()
+        attributes_dict = attributes.dict(by_alias=True)
         key_to_pop = []
         for key, value in attributes_dict.items():
             if value <= 0:
